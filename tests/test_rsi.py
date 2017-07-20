@@ -9,13 +9,13 @@ from scboy.starter import zealot
 
 class TestCommand(unittest.TestCase):
     def test_rsi_1(self):
-        df = pd.read_csv('rsi.csv')
+        df = pd.read_excel('rsi.xls')
         df = Rsi(df, '14').execute()
-        self.assertEqual(df['rsi_2'][1], 4.5)
-        self.assertEqual(df['rsi_2'][2], 3.5)
-        self.assertEqual(df['rsi_2'][3], 2.5)
-        self.assertEqual(df['rsi_2'][4], 1.5)
 
+        exptected = df.loc[16:, '14-day rsi']
+        actual = df.loc[16:, 'rsi_14']
+        np.testing.assert_array_equal(exptected, actual)
+        return
 
 if __name__ == '__main__':
     unittest.main()

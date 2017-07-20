@@ -28,40 +28,38 @@ class Rsi:
     def help(self):
         self.parser.print_help()
 
-    def RSI(cls, ohlc, period=14):
-         ## get the price diff
-        delta = ohlc["close"].diff()[1:]
+    def RSI(self, prices, n=14):
+        # https://stackoverflow.com/questions/20526414/relative-strength-index-in-python-pandas
+        # third answer
+        deltas = (prices['close'] - prices['close'].shift(1)).fillna(0)
 
-        ## positive gains (up) and negative gains (down) Series
-        up, down = delta.copy(), delta.copy()
-        up[up < 0] = 0
-        down[down > 0] = 0
+        # Calculate the straight average seed values.
+        # The first delta is always zero, so we will use a slice of the first n deltas starting at 1,
+        # and filter only deltas > 0 to get gains and deltas < 0 to get losses
+        avg_of_gains = deltas[1:n + 1][deltas > 0].sum() / n
+        avg_of_losses = -deltas[1:n + 1][deltas < 0].sum() / n
 
-        # EMAs of ups and downs
-        _gain = up.ewm(span=period, min_periods=period-1).mean()
-        _loss = down.abs().ewm(span=period, min_periods=period-1).mean()
+        # Set up pd.Series container for RSI values
+        rsi_series = pd.Series(0.0, deltas.index)
 
-        RS = _gain / _loss
-        return pd.Series(100 - (100 / (1 + RS)), name="RSI")
+        # Now calculate RSI using the Wilder smoothing method, starting with n+1 delta.
+        up = lambda x: x if x > 0 else 0
+        down = lambda x: -x if x < 0 else 0
+        i = n + 1
+        for d in deltas[n + 1:]:
+            avg_of_gains = ((avg_of_gains * (n - 1)) + up(d)) / n
+            avg_of_losses = ((avg_of_losses * (n - 1)) + down(d)) / n
+            if avg_of_losses != 0:
+                rs = avg_of_gains / avg_of_losses
+                rsi_series[i] = 100 - (100 / (1 + rs))
+            else:
+                rsi_series[i] = 100
+            i += 1
 
-    def myRsi(self, ohlc, period):
-        # first average gain = sum of gains in the past x period
-        # first average loss = sum of losses over the past x period
-        # average gain = (previous average gain * (x - 1) + current gain) / 14
-        # average loss = (previous average loss * (x - 1) + current loss) / 14
-        delta = ohlc["close"].diff()[1:]
-        gains, losses = delta.copy(), delta.copy()
-        gains[gains < 0] = 0
-        losses[losses > 0] = 0
-
-        avg_gains = gains.rolling(self.period).mean()
-        avg_losses = losses.abs().rolling(self.period).mean()
-        rs = avg_gains / avg_losses
-        return pd.Series(100 - (100 / (1 + rs)))
+        return rsi_series
 
     def execute(self) -> pd.DataFrame:
-        #self.df[self.col_name] = self.df[self.src_col_name].rolling(self.period).mean()
-        self.df[self.col_name] = self.myRsi(self.df, self.period)
+        self.df[self.col_name] = self.RSI(self.df, self.period).shift(1)
         return self.df
 
 if __name__ == '__main__':

@@ -29,6 +29,6 @@ class Mva(Command):
     def help(self):
         self.parser.print_help()
 
-    def execute(self):
+    def execute(self) -> pd.DataFrame:
         self.df[self.col_name] = self.df[self.src_col_name].rolling(self.period).mean()
         return self.df

@@ -20,12 +20,12 @@ def execute_cmd(name, df, argStr) -> pd.DataFrame:
 
 
 def evaluate_head(argStr) -> pd.DataFrame:
-    '''
+    """
     we are not expecting Dataframe as input for the first command in the pipeline.
     The very first command supposed to initialise the Dataframe
     :param argStr: argment string
     :return: -> Dataframe
-    '''
+    """
     args = argStr.strip().split(' ')
     name = args[0]
     if len(args) == 1:
@@ -54,4 +54,3 @@ def zealot(argStr):
         ret = evaluate_pipe(args[i], ret)
 
     return ret
-

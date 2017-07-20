@@ -4,17 +4,17 @@ import os
 
 from scboy.command.command import Command
 
+parser = argparse.ArgumentParser(description='loading price')
+parser.add_argument('filename', type=str,
+                    help='file name')
+
 
 class Price(Command):
     name = 'Price'
 
     def __init__(self, df, argsStr):
-        self.parser = argparse.ArgumentParser(description='loading price')
-        self.parser.add_argument('filename', type=str,
-                                 help='file name')
-
         args = argsStr.split(' ')
-        args = self.parser.parse_args(args)
+        args = parser.parse_args(args)
 
         self.file_name = args.filename
 
@@ -25,6 +25,6 @@ class Price(Command):
 
         return df
 
-    def help(self):
-        super().help()
-
+    @staticmethod
+    def help():
+        parser.print_help()

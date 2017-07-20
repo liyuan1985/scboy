@@ -20,7 +20,8 @@ class Price(Command):
 
     def execute(self) -> pd.DataFrame:
         path = os.path.dirname(__file__)
-        filename = os.path.join(path, '../../data/{}.csv'.format(self.file_name))
+        os.sep
+        filename = os.path.join(path, '..', '..', 'data', '{}.csv'.format(self.file_name))
         df = pd.read_csv(filename, index_col=0)
 
         return df

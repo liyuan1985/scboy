@@ -1,10 +1,11 @@
-import pandas as pd
 import argparse
 
-from scboy.command.test_series import TestSeries
+import pandas as pd
+
+from scboy.command.command import Command
 
 
-class Mva:
+class Mva(Command):
     name = 'Mva'
 
     def __init__(self, df, argsStr):
@@ -18,7 +19,7 @@ class Mva:
         if len(argsStr) > 0:
             args = self.parser.parse_args(args)
         else:
-            args = self.parser.parse_args(['60']) # default values
+            args = self.parser.parse_args(['60'])  # default values
 
         self.df = df
         self.period = args.period
@@ -28,14 +29,6 @@ class Mva:
     def help(self):
         self.parser.print_help()
 
-    def execute(self) -> pd.DataFrame:
+    def execute(self):
         self.df[self.col_name] = self.df[self.src_col_name].rolling(self.period).mean()
         return self.df
-
-
-if __name__ == '__main__':
-    df = TestSeries(None, None).execute()
-    mva = Mva(df, '')
-
-    df = mva.execute()
-    print(df)

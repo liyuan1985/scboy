@@ -10,5 +10,5 @@ class Command:
     def help(self):
         pass
 
-    def execute(self) -> pd.DataFrame:
+    def execute(self):
         pass

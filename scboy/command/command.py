@@ -1,4 +1,8 @@
+import argparse
+
 import pandas as pd
+
+parser = argparse.ArgumentParser(description='Base Command Class')
 
 
 class Command:
@@ -7,8 +11,9 @@ class Command:
     def __init__(self, df, argsStr):
         self.df = df
 
-    def help(self):
-        pass
+    @staticmethod
+    def help():
+        parser.print_help()
 
     def execute(self) -> pd.DataFrame:
         pass

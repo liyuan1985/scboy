@@ -13,9 +13,9 @@ class TestCommand(unittest.TestCase):
         df = pd.read_excel(file)
         df = Rsi(df, '14').execute()
 
-        exptected = df.loc[16:, '14-day rsi']
+        exptected = df.loc[16:, '14-day rsi'].values.astype(np.float64)
         actual = df.loc[16:, 'rsi_14']
-        np.testing.assert_array_equal(exptected, actual)
+        np.testing.assert_allclose(exptected, actual)
         return
 
 if __name__ == '__main__':

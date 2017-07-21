@@ -1,6 +1,8 @@
 import argparse
 
 import pandas as pd
+import talib
+import numpy as np
 
 from scboy.command.test_series import TestSeries
 
@@ -61,8 +63,15 @@ class Rsi:
 
         return rsi_series
 
+    def talib_rsi(self, df, period):
+        return talib.RSI(df['close'].values, period)
+
+
     def execute(self) -> pd.DataFrame:
-        self.df[self.col_name] = self.RSI(self.df, self.period).shift(1)
+        #self.df[self.col_name] = self.RSI(self.df, self.period).shift(1)
+
+        self.df[self.col_name] = self.talib_rsi(self.df, self.period)
+
         return self.df
 
 

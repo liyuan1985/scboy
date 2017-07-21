@@ -1,32 +1,35 @@
-import pandas as pd
 import argparse
 
+import pandas as pd
+
 from scboy.command.test_series import TestSeries
+
+parser = argparse.ArgumentParser(description='generating relative strength index for time series')
+parser.add_argument('period', type=int, nargs='?', default=60,
+                    help='period of Rsi')
+parser.add_argument('-src', type=str, nargs='?', default='close',
+                    help='column of data source in the Dataframe object')
 
 
 class Rsi:
     name = 'Rsi'
 
     def __init__(self, df, argsStr):
-        self.parser = argparse.ArgumentParser(description='generating relative strength index for time series')
-        self.parser.add_argument('period', type=int, nargs='?', default=60,
-                                 help='period of Rsi')
-        self.parser.add_argument('-src', type=str, nargs='?', default='close',
-                                 help='column of data source in the Dataframe object')
 
         args = argsStr.split(' ')
         if len(argsStr) > 0:
-            args = self.parser.parse_args(args)
+            args = parser.parse_args(args)
         else:
-            args = self.parser.parse_args(['14']) # default values
+            args = parser.parse_args(['14'])  # default values
 
         self.df = df
         self.period = args.period
         self.src_col_name = args.src
         self.col_name = 'rsi_{}'.format(self.period)
 
-    def help(self):
-        self.parser.print_help()
+    @staticmethod
+    def help():
+        parser.print_help()
 
     def RSI(self, prices, n=14):
         # https://stackoverflow.com/questions/20526414/relative-strength-index-in-python-pandas
@@ -61,6 +64,7 @@ class Rsi:
     def execute(self) -> pd.DataFrame:
         self.df[self.col_name] = self.RSI(self.df, self.period).shift(1)
         return self.df
+
 
 if __name__ == '__main__':
     df = TestSeries(None, None).execute()

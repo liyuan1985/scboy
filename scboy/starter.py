@@ -1,12 +1,14 @@
 import pandas as pd
 
 from scboy.command.price import Price
+from scboy.command.rsi import Rsi
 from scboy.command.test_series import TestSeries
 from scboy.command.mva import Mva
 
 supprted_cmds = {'test_series': TestSeries.name,
                  'mva': Mva.name,
-                 'price': Price.name}
+                 'price': Price.name,
+                 'rsi': Rsi.name}
 
 
 def execute_cmd(name, df, argStr) -> pd.DataFrame:

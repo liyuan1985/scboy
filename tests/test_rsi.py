@@ -1,15 +1,16 @@
 import unittest
+
 import numpy as np
 import pandas as pd
+import os
 
 from scboy.command.rsi import Rsi
-from scboy.command.test_series import TestSeries
-from scboy.starter import zealot
 
 
 class TestCommand(unittest.TestCase):
     def test_rsi_1(self):
-        df = pd.read_excel('rsi.xls')
+        file = os.path.join('data', 'rsi.xls')
+        df = pd.read_excel(file)
         df = Rsi(df, '14').execute()
 
         exptected = df.loc[16:, '14-day rsi']

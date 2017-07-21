@@ -5,7 +5,7 @@ from scboy.starter import zealot
 
 
 class TestCsvLoad(unittest.TestCase):
-    def test_price1(self):
+    def test_price_1(self):
         df = Price(None, 'test').execute()
         self.assertEqual(df.shape, (16, 4))
         self.assertEqual(df.columns[0], 'open')

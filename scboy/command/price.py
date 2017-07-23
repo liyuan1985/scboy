@@ -1,5 +1,6 @@
 import argparse
 import pandas as pd
+import numpy as np
 import os
 
 from scboy.command.command import Command
@@ -22,7 +23,7 @@ class Price(Command):
         path = os.path.dirname(__file__)
         os.sep
         filename = os.path.join(path, '..', '..', 'data', '{}.csv'.format(self.file_name))
-        df = pd.read_csv(filename, index_col=0)
+        df = pd.read_csv(filename, index_col=0, parse_dates=[0])
 
         return df
 

@@ -1,8 +1,6 @@
 import argparse
 
 import pandas as pd
-import talib
-import numpy as np
 
 from scboy.command.test_series import TestSeries
 
@@ -31,15 +29,27 @@ class Atr:
         parser.print_help()
 
     def execute(self) -> pd.DataFrame:
-        highs = self.df['high'].values
-        lows = self.df['low'].values
-        closes = self.df['close'].values
-        self.df[self.col_name] = talib.ATR(highs, lows, closes, self.period)
+        highs = self.df['high']
+        lows = self.df['low']
+        closes = self.df['close']
+        closes_prev = closes.copy().shift(1)
+
+        # Calculate TRs
+        trs = pd.DataFrame({'hl': highs - lows,
+                            'hc': abs(highs - closes_prev),
+                            'lc': abs(lows - closes_prev)})
+        trs = trs.max(axis=1)
+
+        # get the moving average
+        atr = trs.rolling(self.period).mean()
+        self.df[self.col_name] = atr
+
         return self.df
+
 
 if __name__ == '__main__':
     df = TestSeries(None, None).execute()
-    rsi = Atr(df, '')
+    rsi = Atr(df, '2')
 
     df = rsi.execute()
     print(df)

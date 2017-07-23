@@ -1,8 +1,8 @@
+import os
 import unittest
 
 import numpy as np
 import pandas as pd
-import os
 
 from scboy.command.atr import Atr
 
@@ -13,11 +13,12 @@ class TestCommand(unittest.TestCase):
         df = pd.read_excel(file)
         df = Atr(df, '14').execute()
 
-        #expected = df.loc[16:, 'atr2'].values.astype(np.float64)
-        expected = df.loc[:,'atr2'].iloc[14:]
-        actual = df.loc[:,'atr_14'].iloc[14:]
+        # expected = df.loc[16:, 'atr2'].values.astype(np.float64)
+        expected = df.loc[:, 'atr2'].iloc[14:]
+        actual = df.loc[:, 'atr_14'].iloc[14:]
         np.testing.assert_allclose(expected, actual)
         return
+
 
 if __name__ == '__main__':
     unittest.main()

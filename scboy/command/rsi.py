@@ -1,8 +1,6 @@
 import argparse
 
 import pandas as pd
-import talib
-import numpy as np
 
 from scboy.command.test_series import TestSeries
 
@@ -34,13 +32,30 @@ class Rsi:
         parser.print_help()
 
     def execute(self) -> pd.DataFrame:
-        prices = self.df[self.src_col_name].values
-        self.df[self.col_name] = talib.RSI(prices, self.period)
+        prices = self.df[self.src_col_name]
+
+        # Get the difference in price from previous step
+        delta = prices.diff()
+
+        # Make the positive gains (up) and negative gains (down) Series
+        up, down = delta.copy(), delta.copy()
+        up[up < 0] = 0
+        down[down > 0] = 0
+
+        # Calculate the EWMA
+        roll_up = pd.stats.moments.ewma(up, com=self.period)
+        roll_down = pd.stats.moments.ewma(down.abs(), com=self.period)
+
+        # Calculate the RSI based on EWMA
+        RS = roll_up / roll_down
+        RSI = 100.0 - (100.0 / (1.0 + RS))
+
+        self.df[self.col_name] = RSI
         return self.df
 
 if __name__ == '__main__':
     df = TestSeries(None, None).execute()
-    rsi = Rsi(df, '')
+    rsi = Rsi(df, '2')
 
     df = rsi.execute()
     print(df)

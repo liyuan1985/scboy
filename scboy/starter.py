@@ -3,10 +3,11 @@ import pandas as pd
 from scboy.command.atr import Atr
 from scboy.command.col_cut import ColumnCut
 from scboy.command.minmax import MinMax
+from scboy.command.mva import Mva
 from scboy.command.price import Price
+from scboy.command.row_filter import RowFilter
 from scboy.command.rsi import Rsi
 from scboy.command.test_series import TestSeries
-from scboy.command.mva import Mva
 
 supprted_cmds = {'test_series': TestSeries.name,
                  'mva': Mva.name,
@@ -14,7 +15,8 @@ supprted_cmds = {'test_series': TestSeries.name,
                  'rsi': Rsi.name,
                  'atr': Atr.name,
                  'mm': MinMax.name,
-                 'cut': ColumnCut.name}
+                 'cut': ColumnCut.name,
+                 'filter': RowFilter.name}
 
 
 def execute_cmd(name, df, argStr) -> pd.DataFrame:

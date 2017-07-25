@@ -1,6 +1,7 @@
 import pandas as pd
 
 from scboy.command.atr import Atr
+from scboy.command.col_cut import ColumnCut
 from scboy.command.minmax import MinMax
 from scboy.command.price import Price
 from scboy.command.rsi import Rsi
@@ -12,7 +13,8 @@ supprted_cmds = {'test_series': TestSeries.name,
                  'price': Price.name,
                  'rsi': Rsi.name,
                  'atr': Atr.name,
-                 'mm': MinMax.name}
+                 'mm': MinMax.name,
+                 'cut': ColumnCut.name}
 
 
 def execute_cmd(name, df, argStr) -> pd.DataFrame:

@@ -73,6 +73,12 @@ class TestRowFilter(unittest.TestCase):
         self.assertEqual(df['close'].iloc[0], 5.0)
         self.assertEqual(df['close'].iloc[1], 4.0)
 
+    def test_row_filter_chaining(self):
+        s = 'test_series | filter close in 1.0 2.0 3.0 | filter close > 1.0'
+        df = zealot(s)
+        self.assertEqual(df.shape, (2, 4))
+        self.assertEqual(df['close'].iloc[0], 3.0)
+        self.assertEqual(df['close'].iloc[1], 2.0)
 
 if __name__ == '__main__':
     unittest.main()
